@@ -1,6 +1,8 @@
 
 import hashlib
+import os 
 import requests 
+import subprocess
 
 def main():
 
@@ -37,19 +39,42 @@ def get_expected_sha256():
     return file_hash 
 
 def download_installer():
-    return
+    # Provide the url and make a get request to download the file
+    vlc_file_url = "http://download.videolan.org/pub/videolan/vlc/3.0.17.4/win64/vlc-3.0.17.4-win64.exe"
+    get_exe = requests.get(vlc_file_url)
+
+    # Ensure the request was completed correctly and return the downloaded
+    # content.
+    if get_exe.status_code == requests.codes.ok:
+        file_content = get_exe.content
+        
+    return file_content 
 
 def installer_ok(installer_data, expected_sha256):
-    return
+    # SHA 256 Hash for installer_data
+    file_hash = hashlib.sha256(installer_data).hexdigest()
+
+    # Make sure the hashes match
+    if file_hash == expected_sha256:
+        return 1
+    else:
+        return 0
 
 def save_installer(installer_data):
-    return
+    # Save the installer to the temp directory 
+    with open(r'C:\Users\rubes\AppData\Local\Temp\vlc_installer.exe', 'wb') as file:
+        file.write(installer_data)
+    return r'C:\Users\rubes\AppData\Local\Temp\vlc_installer.exe'
 
 def run_installer(installer_path):
-    return
+    # Run the installer silently 
+    subprocess.run([installer_path, '/L=1033', '/S'])
+    return 1
     
 def delete_installer(installer_path):
-    return
+    # Remove the installer 
+    os.remove(installer_path)
+    return 1
 
 if __name__ == '__main__':
     main()
